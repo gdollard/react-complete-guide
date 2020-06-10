@@ -64,6 +64,7 @@ class App extends Component {
 
     let persons = null;
 
+    // conditionally show elements
     if ( this.state.showPersons ) {
       persons = (
         <div>
