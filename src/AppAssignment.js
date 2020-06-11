@@ -10,15 +10,12 @@ class AppAssignment extends Component {
 
     // outputs the length of the entered text
     textChangeListener = (event) => {
-        const str = event.target.value;
-        this.setState({enteredString: str});
+        this.setState({enteredString: event.target.value});
     };
 
     charClickHandler = (index) => {
-        let currentString = this.state.enteredString;
-
         // convert the state string to an array
-        let charsArray = currentString.split('');
+        let charsArray = this.state.enteredString.split('');
         //remote the one at index
         charsArray.splice(index, 1);
         
@@ -30,32 +27,27 @@ class AppAssignment extends Component {
     render() {
         let charComponents;
 
-        //split up the entered string into an array
+        //split up the entered string into an array and produce a list of CharComponents
         const stateString = this.state.enteredString;
-        let charsArray = stateString.split('');
-        charComponents = (
-            <div>
-                {
-                    charsArray.map((character, index) => {
-                        return <CharComponent 
-                            key = {index}
-                            char = {character} 
-                            onClick = {() => this.charClickHandler(index)}/>
-                    })
-                }
-            </div>
-        );
+
+        const charList = stateString.split('').map((character, index) => {
+            return <CharComponent 
+                key = {index}
+                char = {character} 
+                onClick = {() => this.charClickHandler(index)}/>
+        });
 
         return (
             <div className="App">
               <h1>Assignment 2</h1>
               <input type="text"
-                onChange = {this.textChangeListener} />
+                onChange = {this.textChangeListener}
+                value = {this.state.enteredString} />
                 <p>Entered string length is {this.state.enteredString.length}</p>
                 <div>
                     <ValidationComponent length = {this.state.enteredString.length} />
                 </div>
-                {charComponents}
+                {charList}
             </div>
           );
     }
