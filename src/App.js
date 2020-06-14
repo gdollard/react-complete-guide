@@ -1,99 +1,103 @@
 import React, { Component } from 'react';
+
 import './App.css';
 import Person from './Person/Person';
 
 class App extends Component {
   state = {
     persons: [
-      { id: '1q70ew', name: 'Max', age: 28 },
-      { id: 'qqe545gbbw', name: 'Manu', age: 29 },
-      { id: 'qqeqa545w', name: 'Stephanie', age: 26 }
+      { id: 'asfa1', name: 'Max', age: 28 },
+      { id: 'vasdf1', name: 'Manu', age: 29 },
+      { id: 'asdf11', name: 'Stephanie', age: 26 }
     ],
     otherState: 'some other value',
     showPersons: false
-  }
-
-  deletePersonHandler = (personIndex) => {
-    //make a copy of the array using the spread operator (to avoid using the same state reference)
-    const persons = [...this.state.persons];
-    // remove 1 element from the array
-    persons.splice(personIndex, 1);
-    // now update the state with the modified array
-    this.setState({persons: persons});
   };
 
-
-  nameChangedHandler = (event, id ) => {
-
-    // find the person we want to update, use findIndex on the array to iterate thru each element and compare ID 
-    const personIndex  = this.state.persons.findIndex(p => {
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
       return p.id === id;
     });
 
-    // Don't mutate the state directly so create a new instance of the person object
     const person = {
-      // use the spread operator to extract all properties of the object and create a copy of it
-      ...this.state.persons[personIndex] 
-    }   
+      ...this.state.persons[personIndex]
+    };
 
-    // now update the name of the person from the event object
+    // const person = Object.assign({}, this.state.persons[personIndex]);
+
     person.name = event.target.value;
 
-    // now update the array, first get a copy of the array from state
     const persons = [...this.state.persons];
     persons[personIndex] = person;
 
-    this.setState( {
-      persons: persons
-    });
-  }
+    this.setState({ persons: persons });
+  };
+
+  deletePersonHandler = personIndex => {
+    // const persons = this.state.persons.slice();
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
+  };
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState( { showPersons: !doesShow } );
-  }
+    this.setState({ showPersons: !doesShow });
+  };
 
-  render () {
+  render() {
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
     };
 
     let persons = null;
 
-    // conditionally show elements
-    if ( this.state.showPersons ) {
+    if (this.state.showPersons) {
       persons = (
         <div>
-          {
-            // iterate thru the array of persons and return an array of <Person> elements
-            this.state.persons.map((person, index) => {
-              return <Person 
-                key={person.id}
+          {this.state.persons.map((person, index) => {
+            return (
+              <Person
+                click={() => this.deletePersonHandler(index)}
                 name={person.name}
                 age={person.age}
-                click={() => this.deletePersonHandler(index)} // pass an anonymous function call
-                changed = {(event) => this.nameChangedHandler(event, person.id)}
-                />
-            })
-          }
+                key={person.id}
+                changed={event => this.nameChangedHandler(event, person.id)}
+              />
+            );
+          })}
         </div>
       );
+    }
+
+    const classes = [];
+    if (this.state.persons.length <= 2) {
+      classes.push('red'); // classes = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold'); // classes = ['red', 'bold']
     }
 
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
-        <p>This is really working!</p>
-        <button
-          style={style}
-          onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        <p className={classes.join(' ')}>This is really working!</p>
+        <button className="button" onClick={this.togglePersonsHandler}>
+          Toggle Persons
+        </button>
         {persons}
       </div>
     );
+    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
